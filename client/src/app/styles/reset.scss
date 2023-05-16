@@ -1,0 +1,86 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+*:focus,
+:active {
+    outline: none;
+}
+
+a,
+a:visited {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+body::-webkit-scrollbar-track {
+    background-color: rgb(208 208 208 / 20%);
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: rgb(133 133 133 / 30%);
+    border-radius: 50px;
+}
+
+button {
+    cursor: pointer;
+    background: none;
+    font-family: inherit;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    border: none;
+}
+
+ul,
+li {
+    list-style: none;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+input {
+    outline: none;
+    border: 1px solid transparent;
+    background: transparent;
+    transition: border 0.5s;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+textarea {
+    resize: vertical;
+}
+
+select {
+    appearance: none;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin: 0;
+    padding: 0;
+}
