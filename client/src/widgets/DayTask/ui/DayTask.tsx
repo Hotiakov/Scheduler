@@ -63,7 +63,7 @@ export const DayTask: FC<DayTaskProps> = ({task, column, isFullVersion = true}) 
   const {setCurrentTask} = tasksActions;
 
   const {repeatability, duration } = task;
-  const {time} = repeatability;
+  const {time} = repeatability || {};
   const durationDate = new Date(duration);
   const timeDate = new Date(time);
 

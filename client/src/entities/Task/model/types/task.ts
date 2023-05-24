@@ -10,6 +10,7 @@ export interface ITask {
   preferredTaskTime?: PreferredTaskTime;
   deadline?: Date;
   repeatability?: RepeatSchedule;
+  isInShedule?: boolean;
 }
 
 export interface TaskSchema {

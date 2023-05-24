@@ -17,7 +17,7 @@ const updateBtnStyle = {
 }
 
 export const MonthTask: FC<MonthTaskProps> = ({task}) => {
-    const startTime = new Date(task.repeatability.time);
+    const startTime = new Date(task.repeatability?.time);
     const duration = new Date(task.duration);
     const endTime = calcEndTime(startTime, duration);
     const {setCurrentTask} = tasksActions;

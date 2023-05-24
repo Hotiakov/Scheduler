@@ -46,7 +46,7 @@ export class Task {
 }
 
 export interface ITask {
-  _id: string;
+  _id?: string;
   name: string;
   duration: Date;
   importance?: number;

@@ -10,7 +10,7 @@ import { CreateTaskSchema, UpdateTaskProps } from '../types/createTaskSchema';
 const initialState: CreateTaskSchema = {
     name: '',
     importance: 1,
-    duration: new Date(0, 0, 0, 1, 0),
+    duration: new Date(1970, 0, 1, 1, 0),
     color: '#aabaca',
     isLoading: false,
     repeatability: {

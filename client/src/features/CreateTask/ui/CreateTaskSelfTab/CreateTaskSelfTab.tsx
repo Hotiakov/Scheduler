@@ -74,7 +74,7 @@ export const CreateTaskSelfTab: FC<CreateTaskSelTabfProps> = ({ value }) => {
           <Grid item xs={12}>
             <FormControl fullWidth>
               <TimePicker
-                value={repeatability?.time ? dayjs(repeatability.time) : null}
+                value={repeatability?.time ? dayjs(repeatability?.time) : null}
                 onChange={handleChangeTime}
                 label='Время начала'
                 sx={{                  
