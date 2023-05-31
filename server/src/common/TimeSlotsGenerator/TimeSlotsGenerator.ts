@@ -119,7 +119,7 @@ export class RandomScheduleGenerator {
     currentDate.setMinutes(this.dayInterval.from.getMinutes());
 
     const endDate = new Date();
-    endDate.setMonth(endDate.getMonth() + 1);
+    endDate.setMonth(endDate.getMonth() + 3);
     endDate.setHours(this.dayInterval.to.getHours());
     endDate.setMinutes(this.dayInterval.to.getMinutes());
 
@@ -199,7 +199,7 @@ export class RandomScheduleGenerator {
             taskDate.startTime.getHours(),
             endSlotTime.getHours() - task.duration.getHours(),
           );
-          let randomMinute;
+          let randomMinute: number;
           if (!compareTimes(taskDate.duration, task.duration)) {
             randomMinute = 0;
           } else {

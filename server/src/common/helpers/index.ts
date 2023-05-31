@@ -54,6 +54,13 @@ export function generateRandomPermutation(array: any[]) {
   return arrayToSort;
 }
 
+export function getRandomDate(startDate: Date, endDate: Date): Date {
+  const startTimestamp = startDate.getTime();
+  const endTimestamp = endDate.getTime();
+  const randomTimestamp = getRandomInt(startTimestamp, endTimestamp);
+  return new Date(randomTimestamp);
+}
+
 export function getRandomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min)) + min;
 }

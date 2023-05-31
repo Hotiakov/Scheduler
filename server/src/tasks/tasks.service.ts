@@ -136,7 +136,7 @@ export class TasksService {
       .lean();
     const today = new Date();
     const endDate = new Date(today);
-    endDate.setMonth(endDate.getMonth() + 1);
+    endDate.setMonth(endDate.getMonth() + 3);
     const dateInterval: TDateInterval = {
       from: today,
       to: endDate,

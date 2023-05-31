@@ -23,14 +23,18 @@ export class TaskScheduler {
   private mutationRatio: number;
   private selectionRate: number;
   private populationSize: number;
+  private generationSize: number;
   private existingSchedule: ITask[];
   private newTasks: ITask[];
   private timeSlots: TimeSlot[];
+  private maxFitness: number;
+  private bestFitness: number;
   constructor(
     dayInterval: TDateInterval,
     existingSchedule: ITask[],
     newTasks: ITask[],
     populationSize = 100,
+    generationSize = 100,
     mutationRatio = 0.1,
     selectionRate = 0.2,
   ) {
@@ -40,14 +44,18 @@ export class TaskScheduler {
     this.selectionRate = selectionRate;
     this.existingSchedule = existingSchedule;
     this.newTasks = newTasks;
+    this.generationSize = generationSize;
+    this.bestFitness = 0;
+    this.calcMaxFitness();
   }
 
   generateBestSchedule(): ITask[] {
-    const population = this.generateInitialPopulation();
+    let population = this.generateInitialPopulation();
     let generation = 0;
     let bestSchedule: ITask[] = null;
     let bestFitness = 0;
-    while (generation < 100) {
+    while (generation < this.generationSize) {
+      const newPopulation = [];
       for (let i = 0; i < this.populationSize; i++) {
         const parent1 = this.selection(population);
         const parent2 = this.selection(population);
@@ -58,7 +66,19 @@ export class TaskScheduler {
           bestFitness = mutatedChild.fitness;
           bestSchedule = [...mutatedChild.schedule];
         }
+        if (bestFitness === this.maxFitness) {
+          bestSchedule = bestSchedule.map((item) => {
+            return {
+              ...item,
+              isInShedule: true,
+            };
+          });
+          this.bestFitness = bestFitness;
+          return bestSchedule;
+        }
+        newPopulation.push(mutatedChild);
       }
+      population = newPopulation;
       generation++;
     }
     bestSchedule = bestSchedule.map((item) => {
@@ -67,6 +87,7 @@ export class TaskScheduler {
         isInShedule: true,
       };
     });
+    this.bestFitness = bestFitness;
     return bestSchedule;
   }
 
@@ -97,7 +118,7 @@ export class TaskScheduler {
       const endTime = addDuration(startTime, task.duration);
       endDate.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
       // Проверка выполнения дедлайна
-      if (task.deadline && endDate > task.deadline) {
+      if (task.deadline && endDate.getTime() > task.deadline.getTime()) {
         fitness -= 100; // Штраф за невыполнение дедлайна
       }
 
@@ -210,5 +231,13 @@ export class TaskScheduler {
     }
 
     return individ;
+  }
+
+  private calcMaxFitness() {
+    let fitness = 0;
+    this.newTasks.forEach((item) => {
+      fitness += item.importance * 10;
+    });
+    this.maxFitness = fitness;
   }
 }
