@@ -52,7 +52,7 @@ export const  CreateTaskModal: FC<CreateTaskModalProps> = ({className, onClose }
     dispatch(removeTask(currentTask['_id'])).then(() => {
       enqueueSnackbar("Задача успешно удалена", {
         variant: "success",
-      })
+      });
       onClose();
     })
     .catch((e) => {

@@ -196,8 +196,14 @@ export class RandomScheduleGenerator {
             taskDate.duration,
           );
           const randomHour = getRandomInt(
-            taskDate.startTime.getHours(),
-            endSlotTime.getHours() - task.duration.getHours(),
+            Math.max(
+              taskDate.startTime.getHours(),
+              task.preferredTaskTime.after?.getHours() || 0,
+            ),
+            Math.min(
+              endSlotTime.getHours() - task.duration.getHours(),
+              task.preferredTaskTime.before?.getHours() || 24,
+            ),
           );
           let randomMinute: number;
           if (!compareTimes(taskDate.duration, task.duration)) {

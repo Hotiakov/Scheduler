@@ -11,10 +11,12 @@ import { useAppDispatch } from 'shared/lib/hooks/useAppDispatch';
 import { useSelector } from 'react-redux';
 import { getLogin } from '../../model/selectors/getLogin/getLogin';
 import { CircularProgress } from '@mui/material';
+import { useSnackbar } from "notistack";
 
 export const LoginForm = () => {
   const dispatch = useAppDispatch();
   const loginState = useSelector(getLogin);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

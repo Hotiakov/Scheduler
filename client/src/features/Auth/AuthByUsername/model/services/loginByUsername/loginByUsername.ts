@@ -23,7 +23,6 @@ export const loginByUsername = createAsyncThunk<AccessToken, LoginByUsernameProp
     thunkAPI.dispatch(setUserInfo());
     return response.data;
   } catch (e) {
-    console.error(e);
-    return thunkAPI.rejectWithValue(e);
+    return thunkAPI.rejectWithValue(e.error);
   }
 });

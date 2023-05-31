@@ -5,7 +5,12 @@ import {
 } from '../TimeSlotsGenerator/TimeSlotsGenerator';
 import { TDateInterval } from '../types/dateInterval';
 import { ITask } from 'src/tasks/schemas/task.schema';
-import { addDuration, compareDates, compareTimes } from '../helpers';
+import {
+  addDuration,
+  compareDates,
+  compareTimes,
+  getRandomInt,
+} from '../helpers';
 
 class Individual {
   schedule: ITask[]; // Расписание задач
@@ -64,7 +69,7 @@ export class TaskScheduler {
         mutatedChild.fitness = this.calculateFitness(mutatedChild.schedule);
         if (mutatedChild.fitness > bestFitness) {
           bestFitness = mutatedChild.fitness;
-          bestSchedule = [...mutatedChild.schedule];
+          bestSchedule = JSON.parse(JSON.stringify(mutatedChild.schedule));
         }
         if (bestFitness === this.maxFitness) {
           bestSchedule = bestSchedule.map((item) => {
@@ -109,13 +114,14 @@ export class TaskScheduler {
     return population;
   }
 
-  calculateFitness(newDistributedTasks: ITask[], isLogged = false): number {
+  calculateFitness(newDistributedTasks: ITask[]): number {
     let fitness = 0;
     for (let i = 0; i < newDistributedTasks.length; i++) {
       const task = newDistributedTasks[i];
       const startTime = task.repeatability.time;
       const endDate = new Date(task.repeatability.days[0]);
       const endTime = addDuration(startTime, task.duration);
+
       endDate.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
       // Проверка выполнения дедлайна
       if (task.deadline && endDate.getTime() > task.deadline.getTime()) {
@@ -127,16 +133,17 @@ export class TaskScheduler {
       // Учет предпочтений пользователя по времени
       if (task.preferredTaskTime) {
         const { before, after } = task.preferredTaskTime;
-        if (before && startTime > before) {
+        if (before && compareTimes(startTime, before) !== -1) {
           fitness -= 10;
         }
-        if (after && startTime < after) {
+        if (after && compareTimes(startTime, after) !== 1) {
           fitness -= 10;
         }
       }
     }
     //Добавляем штраф за каждую нераспределенную задачу
     fitness -= (this.newTasks.length - newDistributedTasks.length) * 10;
+
     return fitness;
   }
 
@@ -206,6 +213,36 @@ export class TaskScheduler {
         );
         if (newStartTime) {
           const taskDate = availibleTimeSlots[newStartTime];
+          const endSlotTime = addDuration(
+            taskDate.startTime,
+            taskDate.duration,
+          );
+          const randomHour = getRandomInt(
+            Math.max(
+              taskDate.startTime.getHours(),
+              task.preferredTaskTime.after?.getHours() || 0,
+            ),
+            Math.min(
+              endSlotTime.getHours() - task.duration.getHours(),
+              task.preferredTaskTime.before?.getHours() || 24,
+            ),
+          );
+          let randomMinute: number;
+          if (!compareTimes(taskDate.duration, task.duration)) {
+            randomMinute = 0;
+          } else {
+            randomMinute =
+              Math.round(
+                getRandomInt(
+                  randomHour === taskDate.startTime.getHours()
+                    ? taskDate.startTime.getMinutes()
+                    : 0,
+                  60,
+                ) / 5,
+              ) * 5;
+          }
+          const time = new Date(0);
+          time.setHours(randomHour, randomMinute);
           slots.push({
             id: task.repeatability.time.getTime() + task.duration.getTime(),
             startTime: task.repeatability.time,
@@ -215,7 +252,7 @@ export class TaskScheduler {
           schedule[i].repeatability = {
             type: 'specific',
             days: [taskDate.day],
-            time: taskDate.startTime,
+            time: time,
           };
           const initialIndex = slots.findIndex(
             (item) => item.id === availibleTimeSlots[newStartTime].id,
@@ -224,7 +261,7 @@ export class TaskScheduler {
             slots,
             initialIndex,
             task.duration,
-            task.repeatability.time,
+            schedule[i].repeatability.time,
           );
         }
       }
@@ -239,5 +276,43 @@ export class TaskScheduler {
       fitness += item.importance * 10;
     });
     this.maxFitness = fitness;
+  }
+
+  testOperation() {
+    let time = performance.now();
+    const schedule = this.generateBestSchedule();
+    let deadlineCounter = 0;
+    time = performance.now() - time;
+    console.log(`Оценка c параметрами 
+      p=${this.populationSize}
+      k=${this.generationSize}
+      m=${this.existingSchedule.length}
+      n=${this.newTasks.length}
+    `);
+    console.log('Время:', time);
+    console.log(
+      `Приспособленность: ${this.bestFitness} / ${this.maxFitness} ${
+        (this.bestFitness * 100) / this.maxFitness
+      }%`,
+    );
+    schedule.forEach((item) => {
+      const endDate = new Date(item.repeatability.days[0]);
+      const endTime = addDuration(item.repeatability.time, item.duration);
+      endDate.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
+      if (
+        (item.repeatability.days[0] as Date).getTime() <=
+        item.deadline.getTime()
+      )
+        deadlineCounter++;
+    });
+    console.log(
+      'Количество выполненных дедлайнов:',
+      deadlineCounter,
+      'из',
+      this.newTasks.length,
+    );
+    schedule.map((item) => {
+      console.log(item);
+    });
   }
 }

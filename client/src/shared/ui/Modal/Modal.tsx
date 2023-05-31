@@ -23,7 +23,7 @@ const style = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-  zIndex: 1000,
+  zIndex: 1600,
 };
 
 export const PortalModal: FC<ModalProps> = ({

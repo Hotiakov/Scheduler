@@ -1,7 +1,7 @@
 import { getUserInfo } from "entities/User";
 import { getUserIsLoading } from "entities/User/model/selectors/getUser/getUserInfo";
 import { checkAuth } from "features/Auth/RefreshToken/model";
-import { useEffect, Suspense } from "react";
+import { useEffect, Suspense, useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { classNames } from "shared/lib/classnames/classnames";

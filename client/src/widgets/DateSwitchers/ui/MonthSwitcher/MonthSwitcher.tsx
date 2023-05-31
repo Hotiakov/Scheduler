@@ -37,6 +37,7 @@ export const MonthSwitcher: FC = () => {
         views={['year', 'month']}
         value={dayjs(date)}
         onChange={(date) => setDate(date.toDate())}
+        openTo='month'
       />
     </Box>
   );
