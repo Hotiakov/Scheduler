@@ -38,7 +38,7 @@ export const  SelectType: FC = () => {
             },
             '& .MuiSvgIcon-root': {
                 color: 'white'
-            }
+            },
           }}
         >
           <MenuItem value={ScheduleTypes.DAY}>День</MenuItem>

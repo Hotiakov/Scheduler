@@ -30,6 +30,8 @@ export const WeekSwitcher: FC = () => {
         position: 'sticky',
         top: 0,
         background: 'white',
+        zIndex: 1000,
+
       }}>
       <Button onClick={
         () => setDate(new Date())

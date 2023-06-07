@@ -185,9 +185,15 @@ export class RandomScheduleGenerator {
 
     generateRandomPermutation(this.undistirbutedTasks).forEach(
       (task: ITask) => {
-        const slotsForTask = availibleTimeSlots.filter(
-          (item) => compareTimes(item.duration, task.duration) !== -1,
+        const slotsForTaskDuration = availibleTimeSlots.filter(
+          (item) => compareTimes(task.duration, item.duration) !== 1,
         );
+        const slotsForTaskDeadline = slotsForTaskDuration.filter(
+          (item) => task.deadline > item.day,
+        );
+        const slotsForTask = slotsForTaskDeadline.length
+          ? slotsForTaskDeadline
+          : slotsForTaskDuration;
         if (slotsForTask.length) {
           const randomIndex = Math.floor(Math.random() * slotsForTask.length);
           const taskDate = slotsForTask[randomIndex];
@@ -198,11 +204,11 @@ export class RandomScheduleGenerator {
           const randomHour = getRandomInt(
             Math.max(
               taskDate.startTime.getHours(),
-              task.preferredTaskTime.after?.getHours() || 0,
+              task?.preferredTaskTime?.after?.getHours() || 0,
             ),
             Math.min(
               endSlotTime.getHours() - task.duration.getHours(),
-              task.preferredTaskTime.before?.getHours() || 24,
+              task?.preferredTaskTime?.before?.getHours() || 24,
             ),
           );
           let randomMinute: number;

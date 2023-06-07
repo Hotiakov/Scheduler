@@ -1,7 +1,7 @@
 import { ITask } from "../types/task";
 import { compareDateOnly } from "shared/lib/compareDateOnly/compareDateOnly";
 
-const weekDay = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+export const weekDay = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 export const filterTasksByDate = (date: Date, tasks: ITask[]) => {
   const day = weekDay[date.getDay()];

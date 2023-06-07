@@ -205,9 +205,16 @@ export class TaskScheduler {
     for (let i = 0; i < schedule.length; i++) {
       if (Math.random() < this.mutationRatio) {
         const task = schedule[i];
-        const availibleTimeSlots = slots.filter(
+        const availibleTimeSlotsDuration = slots.filter(
           (item) => compareTimes(task.duration, item.duration) !== 1,
         );
+        const availibleTimeSlotsDeadline = availibleTimeSlotsDuration.filter(
+          (item) => task.deadline > item.day,
+        );
+        const availibleTimeSlots = availibleTimeSlotsDeadline.length
+          ? availibleTimeSlotsDeadline
+          : availibleTimeSlotsDuration;
+
         const newStartTime = Math.floor(
           Math.random() * availibleTimeSlots.length,
         );
@@ -220,11 +227,11 @@ export class TaskScheduler {
           const randomHour = getRandomInt(
             Math.max(
               taskDate.startTime.getHours(),
-              task.preferredTaskTime.after?.getHours() || 0,
+              task.preferredTaskTime?.after?.getHours() || 0,
             ),
             Math.min(
               endSlotTime.getHours() - task.duration.getHours(),
-              task.preferredTaskTime.before?.getHours() || 24,
+              task.preferredTaskTime?.before?.getHours() || 24,
             ),
           );
           let randomMinute: number;

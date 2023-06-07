@@ -14,7 +14,7 @@ export const  WeekDays: FC<WeekDaysProps> = () => {
       <Grid container sx={{
         position: 'sticky',
         top: '60px',
-        zIndex: 1500,
+        zIndex: 999,
       }}>
         <Grid item xs={1}></Grid>
         <Grid item xs={11} sx={{
